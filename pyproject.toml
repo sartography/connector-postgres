@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "connector-http"
+name = "connector-postgres-v2"
 version = "1.0.0"
 description = "Make HTTP Requests available to SpiffWorkflow Service Tasks"
 authors = ["Jon Herron <jon.herron@yahoo.com>"]
 readme = "README.md"
-packages = [{include = "connector_http", from = "src" }]
+packages = [{include = "connector_postgres_v2", from = "src" }]
 
 [tool.poetry.dependencies]
 python = "^3.9"
