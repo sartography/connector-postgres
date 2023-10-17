@@ -7,7 +7,7 @@ from spiffworkflow_connector_command.command_interface import ConnectorProxyResp
 from connector_postgresql.base_command import BaseCommand
 
 
-class CreateTable(BaseCommand, ConnectorCommand):
+class UpdateValuesV2(BaseCommand, ConnectorCommand):
 
     def __init__(self,
         database_connection_str: str,
@@ -20,18 +20,22 @@ class CreateTable(BaseCommand, ConnectorCommand):
         self.schema = schema
 
     def execute(self, _config: Any, _task_data: Any) -> ConnectorProxyResponseDict:
+        set_clause, values = self._build_set_clause(self.schema)
+        where_clause, where_values = self.build_where_clause(self.schema)
 
-        columns = self._column_definitions(self.schema)
+        if where_values is not None:
+            values += where_values
+
         # TODO: build properly with SQL().format(Identifier(name))
         # https://www.psycopg.org/docs/usage.html#passing-parameters-to-sql-queries
-        sql = f"CREATE TABLE IF NOT EXISTS {self.table_name} ({columns});"
+        sql = f"UPDATE {self.table_name} {set_clause} {where_clause};"
 
-        return self.execute_query(sql, self.database_connection_str)
+        return self.execute_query(sql, self.database_connection_str, values)
 
-    def _column_definitions(self, schema: dict[str, Any]) -> str:
-        def column_definition(column: dict) -> str:
-            return f"{column['name']} {column['type']}"
+    def _build_set_clause(self, schema: dict[str, Any]) -> tuple[str, Any]:
+        columns_to_values = schema["set"]
+        columns, values = zip(*columns_to_values.items(), strict=True)
+        set_columns = ", ".join(f"{c} = %s" for c in columns)
 
-        column_definitions = map(column_definition, schema["column_definitions"])
+        return f"SET {set_columns}", values
 
-        return ",".join(column_definitions)

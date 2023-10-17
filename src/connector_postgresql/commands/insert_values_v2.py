@@ -7,7 +7,7 @@ from spiffworkflow_connector_command.command_interface import ConnectorProxyResp
 from connector_postgresql.base_command import BaseCommand
 
 
-class SelectValues(BaseCommand, ConnectorCommand):
+class InsertValuesV2(BaseCommand, ConnectorCommand):
 
     def __init__(self,
         database_connection_str: str,
@@ -20,12 +20,12 @@ class SelectValues(BaseCommand, ConnectorCommand):
         self.schema = schema
 
     def execute(self, _config: Any, _task_data: Any) -> ConnectorProxyResponseDict:
-
         columns = ",".join(self.schema["columns"])
-        where_clause, values = self.build_where_clause(self.schema)
+        placeholders = f"({','.join(['%s'] * len(self.schema['columns']))})"
+        value_lists = self.schema["values"]
 
         # TODO: build properly with SQL().format(Identifier(name))
         # https://www.psycopg.org/docs/usage.html#passing-parameters-to-sql-queries
-        sql = f"SELECT {columns} FROM {self.table_name} {where_clause};"  # noqa: S608
+        sql = f"INSERT INTO {self.table_name} ({columns}) VALUES {placeholders};"  # noqa: S608
 
-        return self.fetchall(sql, self.database_connection_str, values)
+        return self.execute_batch(sql, self.database_connection_str, value_lists)

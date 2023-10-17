@@ -6,7 +6,7 @@ from spiffworkflow_connector_command.command_interface import ConnectorProxyResp
 from connector_postgresql.base_command import BaseCommand
 
 
-class DropTable(BaseCommand, ConnectorCommand):
+class DropTableV2(BaseCommand, ConnectorCommand):
 
     def __init__(self,
         database_connection_str: str,
