@@ -1,12 +1,11 @@
 
 from typing import Any
 
+from connector_postgresql.base_command import BaseCommand
 from psycopg2.extensions import register_adapter  # type: ignore
 from psycopg2.extras import Json  # type: ignore
 from spiffworkflow_connector_command.command_interface import ConnectorCommand
 from spiffworkflow_connector_command.command_interface import ConnectorProxyResponseDict
-
-from connector_postgresql.base_command import BaseCommand
 
 register_adapter(dict, Json)
 

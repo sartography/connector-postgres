@@ -1,10 +1,9 @@
 
 from typing import Any
 
+from connector_postgresql.base_command import BaseCommand
 from spiffworkflow_connector_command.command_interface import ConnectorCommand
 from spiffworkflow_connector_command.command_interface import ConnectorProxyResponseDict
-
-from connector_postgresql.base_command import BaseCommand
 
 
 class DeleteValuesV2(BaseCommand, ConnectorCommand):

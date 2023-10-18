@@ -1,9 +1,8 @@
 from typing import Any
 
+from connector_postgresql.base_command import BaseCommand
 from spiffworkflow_connector_command.command_interface import ConnectorCommand
 from spiffworkflow_connector_command.command_interface import ConnectorProxyResponseDict
-
-from connector_postgresql.base_command import BaseCommand
 
 
 class DropTableV2(BaseCommand, ConnectorCommand):

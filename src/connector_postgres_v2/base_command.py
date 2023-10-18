@@ -1,5 +1,5 @@
-from typing import Any
 import json
+from typing import Any
 
 import psycopg2  # type: ignore
 from spiffworkflow_connector_command.command_interface import CommandErrorDict
