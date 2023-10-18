@@ -1,9 +1,10 @@
 
 from typing import Any
 
-from connector_postgresql.base_command import BaseCommand
 from spiffworkflow_connector_command.command_interface import ConnectorCommand
 from spiffworkflow_connector_command.command_interface import ConnectorProxyResponseDict
+
+from connector_postgres_v2.base_command import BaseCommand
 
 
 class UpdateValuesV2(BaseCommand, ConnectorCommand):

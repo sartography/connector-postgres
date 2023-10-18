@@ -1,11 +1,12 @@
 from typing import Any
 
-from connector_postgresql.base_command import BaseCommand
 from spiffworkflow_connector_command.command_interface import ConnectorCommand
 from spiffworkflow_connector_command.command_interface import ConnectorProxyResponseDict
 
+from connector_postgres_v2.base_command import BaseCommand
 
-class DropTableV2(BaseCommand, ConnectorCommand):
+
+class DropTableV2(ConnectorCommand, BaseCommand):
 
     def __init__(self,
         database_connection_str: str,
