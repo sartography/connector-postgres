@@ -1,4 +1,3 @@
-import json
 from typing import Any
 
 import psycopg2  # type: ignore
@@ -36,7 +35,7 @@ class BaseCommand:
                 conn.close()
 
         command_response: CommandResponseDict = {
-            "body": json.dumps(command_response_body),
+            "body": command_response_body,
             "mimetype": "application/json",
         }
         return_response: ConnectorProxyResponseDict = {
@@ -66,8 +65,14 @@ class BaseCommand:
         return self._execute(sql, conn_str, handler)
 
     def fetchall(self, sql: str, conn_str: str, values: list) -> ConnectorProxyResponseDict:
-        def prep_results(results: dict) -> list:
-            return list(map(list, results))
+        def prep_results(results: list) -> list:
+            # takes the raw results which is a list of a single item list of strings that
+            # look like tuples with embedded quotes:
+            # - [["(1,\"some vendor\")"], ["(2,\"another vendor\")"]]
+            # and turns it into a list of lists of strings that represent the data for each
+            # column. this way the individual values can be accessed directly from task data.
+            # - [["1", "some vender"], ["2", "another_vendor"]]
+            return [r[0][1:-1].replace('"', '').split(",") for r in results]
         def handler(conn: Any, cursor: Any) -> list:
             cursor.execute(sql, values)
             return prep_results(cursor.fetchall())
