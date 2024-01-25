@@ -65,12 +65,10 @@ class BaseCommand:
         return self._execute(sql, conn_str, handler)
 
     def fetchall(self, sql: str, conn_str: str, values: list) -> ConnectorProxyResponseDict:
-        def prep_results(results: list) -> list:
-            return [list(result) for result in results]
         def handler(conn: Any, cursor: Any) -> list:
             cursor.execute(sql, values)
             conn.commit()
-            return prep_results(cursor.fetchall())
+            return cursor.fetchall()
 
         return self._execute(sql, conn_str, handler)
 
