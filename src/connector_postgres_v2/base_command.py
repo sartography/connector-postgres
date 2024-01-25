@@ -66,15 +66,10 @@ class BaseCommand:
 
     def fetchall(self, sql: str, conn_str: str, values: list) -> ConnectorProxyResponseDict:
         def prep_results(results: list) -> list:
-            # takes the raw results which is a list of a single item list of strings that
-            # look like tuples with embedded quotes:
-            # - [["(1,\"some vendor\")"], ["(2,\"another vendor\")"]]
-            # and turns it into a list of lists of strings that represent the data for each
-            # column. this way the individual values can be accessed directly from task data.
-            # - [["1", "some vender"], ["2", "another_vendor"]]
-            return [r[0][1:-1].replace('"', '').split(",") for r in results]
+            return [list(result) for result in results]
         def handler(conn: Any, cursor: Any) -> list:
             cursor.execute(sql, values)
+            conn.commit()
             return prep_results(cursor.fetchall())
 
         return self._execute(sql, conn_str, handler)
